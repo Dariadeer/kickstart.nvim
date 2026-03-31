@@ -13,7 +13,7 @@ return {
   },
   lazy = false,
   keys = {
-    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+    { '<leader>e', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
   ---@module 'neo-tree'
   ---@type neotree.Config
@@ -21,8 +21,31 @@ return {
     filesystem = {
       window = {
         mappings = {
-          ['\\'] = 'close_window',
+          ['<leader>e'] = 'close_window',
         },
+      },
+    },
+    default_component_configs = {
+      icon = {
+        folder_closed = '[+]',
+        folder_open = '[-]',
+        default = '*',
+      },
+      git_status = {
+        symbols = {
+          -- Change type
+          added = '✚', -- NOTE: you can set any of these to an empty string to not show them
+          deleted = '✖',
+          modified = 'M',
+          renamed = 'R',
+          -- Status type
+          untracked = 'U',
+          ignored = 'I',
+          unstaged = 'U',
+          staged = 'S',
+          conflict = 'C',
+        },
+        align = 'right',
       },
     },
   },

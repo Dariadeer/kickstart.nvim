@@ -140,6 +140,10 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 
 vim.o.tabstop = 4
+vim.o.shiftwidth = 4
+vim.o.softtabstop = 4
+vim.o.expandtab = true
+vim.o.autoindent = true
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
@@ -701,7 +705,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -892,20 +896,18 @@ require('lazy').setup({
           local language = vim.treesitter.language.get_lang(filetype)
           if not language then return end
 
-          -- check if parser exists and load it
           if not vim.treesitter.language.add(language) then return end
-          -- enables syntax highlighting and other treesitter features
           vim.treesitter.start(buf, language)
 
-          -- enables treesitter based folds
-          -- for more info on folds see `:help folds`
-          -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-          -- vim.wo.foldmethod = 'expr'
-
-          -- enables treesitter based indentation
-          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          -- Disable Treesitter indentation
+          vim.bo[buf].indentexpr = ''
         end,
       })
+      vim.g.python_indent = {
+        open_paren = 'shiftwidth()',
+        nested_paren = 'shiftwidth()',
+        closed_paren_align_last_line = false,
+      }
     end,
   },
 
@@ -921,41 +923,9 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  {
-    'nvim-neo-tree/neo-tree.nvim',
-    branch = 'v3.x',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons',
-      'MunifTanjim/nui.nvim',
-    },
-
-    config = function()
-      require('neo-tree').setup {
-        window = {
-          mappings = {
-            ['\\'] = 'none', -- disable default mapping
-          },
-        },
-      }
-
-      -- Toggle tree with <leader>e
-      vim.keymap.set(
-        'n',
-        '<leader>e',
-        function()
-          require('neo-tree.command').execute {
-            toggle = true,
-            reveal = true,
-          }
-        end,
-        { desc = 'Toggle file explorer' }
-      )
-    end,
-  },
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
